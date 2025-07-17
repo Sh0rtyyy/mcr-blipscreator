@@ -20,8 +20,8 @@ end)
 
 RegisterNetEvent('mcr-blipscreator:checkAdmin')
 AddEventHandler('mcr-blipscreator:checkAdmin', function()
-    local _source = source
-    local xPlayer = ESX.GetPlayerFromId(_source)
+    local src = source
+    local xPlayer = ESX.GetPlayerFromId(src)
     local isAdmin = false
     if xPlayer and xPlayer.getGroup then
         local group = xPlayer.getGroup()
@@ -38,6 +38,17 @@ end)
 RegisterNetEvent('mcr-blipscreator:saveBlip')
 AddEventHandler('mcr-blipscreator:saveBlip', function(data)
     local src = source
+    local xPlayer = ESX.GetPlayerFromId(src)
+    local isAdmin = false
+    if xPlayer and xPlayer.getGroup then
+        local group = xPlayer.getGroup()
+        for _, adminGroup in ipairs(adminGroups) do
+            if group == adminGroup then
+                isAdmin = true
+                break
+            end
+        end
+    end
     table.insert(allBlips, data)
     SaveResourceFile(GetCurrentResourceName(), 'blips.json', json.encode(allBlips, {indent=true}), -1)
     TriggerClientEvent('mcr-blipscreator:sendAllBlips', -1, allBlips)
